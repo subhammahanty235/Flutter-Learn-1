@@ -2,7 +2,7 @@
 
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:html';
+// import 'dart:html';
 
 import 'package:basic1/main.dart';
 import 'package:flutter/material.dart';
@@ -37,24 +37,59 @@ class _AddNewArticleState extends State<AddnewArticleScreen> {
                               builder: (context) =>
                                   MyHomePage(title: 'Flutter Demo Home Page')));
                     },
-                    child: const Icon(Icons.home_max_rounded))
+                    child: const Icon(Icons.other_houses_rounded))
               ],
             )),
         body: Column(
           children: [
             Container(
               margin: EdgeInsets.all(20),
-              child: Text("Add New Article",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600 ),),
+              child: Text(
+                "Add New Article",
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+              ),
             ),
             Container(
-            //   child:Column(children: [
-            //     // TextField(),
-                
-            //   ],)
-            ),
+                child: Column(
+              children: [
+                Container(
+                  margin: EdgeInsets.all(20),
+                  decoration: BoxDecoration(),
+                  child: TextField(
+                    decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Enter the Subject',
+                        helperText: "max length is 20 characters"),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  decoration: BoxDecoration(),
+                  child: TextField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: 4,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Write your Article',
+                    ),
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top:10),
+                  width: MediaQuery.of(context).size.width - 40,
+                  decoration: BoxDecoration(
+                      // color: Colors.green[50],
+                      borderRadius: BorderRadius.circular(7),
+                      border: Border.all(color: Colors.blue, width: 1.5)),
+                  child: TextButton(
+                    onPressed: () {},
+                    child: Text("Save",
+                        style: TextStyle(fontWeight: FontWeight.w600)),
+                  ),
+                )
+              ],
+            )),
             Container()
-
           ],
         ));
   }

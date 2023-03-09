@@ -31,7 +31,7 @@ class UserScreen extends StatelessWidget {
                               builder: (context) =>
                                   MyHomePage(title: 'Flutter Demo Home Page')));
                     },
-                    child: const Icon(Icons.home_max_rounded))
+                    child: const Icon(Icons.other_houses_rounded))
               ],
             )),
         body: Column(

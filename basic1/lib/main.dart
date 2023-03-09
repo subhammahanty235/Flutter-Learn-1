@@ -111,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Logo',
+                'Artico',
                 style: TextStyle(
                     color: Colors.black87,
                     fontSize: 22,
