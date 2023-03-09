@@ -1,3 +1,6 @@
+import 'package:basic1/AddNewArticleScreen.dart';
+import 'package:basic1/SplashScreen.dart';
+import 'package:basic1/UserScreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,22 +14,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or simply save your changes to "hot reload" in a Flutter IDE).
+          // Notice that the counter didn't reset back to zero; the application
+          // is not restarted.
+          primarySwatch: Colors.blue,
+        ),
+        // home: const MyHomePage(title: 'Flutter Demo Home Page'),
+        home: SplashScreen());
   }
 }
 
@@ -102,6 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: Colors.green[50],
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -113,11 +117,18 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontSize: 22,
                     fontWeight: FontWeight.w500),
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    print('clicked');
-                  },
-                  child: const Icon(Icons.menu_rounded))
+              
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UserScreen(
+                                    userdata: data[0],
+                                  )));
+                    },
+                    child: const Icon(Icons.menu_rounded)),
+              
             ],
           )),
       body: (Column(
@@ -158,105 +169,104 @@ class _MyHomePageState extends State<MyHomePage> {
                   ])),
 
           Container(
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
-            height: MediaQuery.of(context).size.height * 0.75,
-            decoration: BoxDecoration(
-                color: Colors.green[100],
-                borderRadius: BorderRadius.circular(12)),
+              padding: const EdgeInsets.all(10),
+              margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
+              height: MediaQuery.of(context).size.height * 0.75,
+              decoration: BoxDecoration(
+                  color: Colors.green[100],
+                  borderRadius: BorderRadius.circular(12)),
+              child: ListView.builder(
+                itemBuilder: (context, index) {
+                  return (Container(
+                    // height: 100,
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10)),
 
-                child: ListView.builder(itemBuilder:(context , index){
-                   return (
-                   Container(
-                  // height: 100,
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10)),
-
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(6),
-                            margin: const EdgeInsets.fromLTRB(9, 5, 3, 5),
-                            decoration: BoxDecoration(
-                                color: Colors.blueAccent,
-                                borderRadius: BorderRadius.circular(30)),
-                            child: const Icon(
-                              Icons.person_add_alt_1_rounded,
-                              color: Colors.white,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(6),
+                              margin: const EdgeInsets.fromLTRB(9, 5, 3, 5),
+                              decoration: BoxDecoration(
+                                  color: Colors.blueAccent,
+                                  borderRadius: BorderRadius.circular(30)),
+                              child: const Icon(
+                                Icons.person_add_alt_1_rounded,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                          Text(data[index]['name'],
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w500, fontSize: 16))
-                        ],
-                      ),
-                      const Divider(),
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Text(
-                            data[index]['article']),
-                      )
-                    ],
-                  ),
-                )
-                );
-                } , 
-                  itemCount: data.length,
-                )
-            // child: ListView(
-            //   children: [
-            //     Container(
-            //       // height: 100,
-            //       margin:
-            //           const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-            //       decoration: BoxDecoration(
-            //           color: Colors.white,
-            //           borderRadius: BorderRadius.circular(10)),
+                            Text(data[index]['name'],
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w500, fontSize: 16))
+                          ],
+                        ),
+                        const Divider(),
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(data[index]['article']),
+                        )
+                      ],
+                    ),
+                  ));
+                },
+                itemCount: data.length,
+              )
+              // child: ListView(
+              //   children: [
+              //     Container(
+              //       // height: 100,
+              //       margin:
+              //           const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+              //       decoration: BoxDecoration(
+              //           color: Colors.white,
+              //           borderRadius: BorderRadius.circular(10)),
 
-            //       child: Column(
-            //         children: [
-            //           Row(
-            //             children: [
-            //               Container(
-            //                 padding: const EdgeInsets.all(6),
-            //                 margin: const EdgeInsets.fromLTRB(9, 5, 3, 5),
-            //                 decoration: BoxDecoration(
-            //                     color: Colors.blueAccent,
-            //                     borderRadius: BorderRadius.circular(30)),
-            //                 child: const Icon(
-            //                   Icons.person_add_alt_1_rounded,
-            //                   color: Colors.white,
-            //                 ),
-            //               ),
-            //               const Text('Subham',
-            //                   style: TextStyle(
-            //                       fontWeight: FontWeight.w500, fontSize: 16))
-            //             ],
-            //           ),
-            //           const Divider(),
-            //           Container(
-            //             padding: const EdgeInsets.all(10),
-            //             child: const Text(
-            //                 "In my previous article, I had discussed the differenc In my previous article, I had discussed the difference between Stateful and Stateless Widgets. You have to apply that concept to understand the working of this Counter App.e between Stateful and Stateless Widgets. You have to apply that concept to understand the working of this Counter App."),
-            //           )
-            //         ],
-            //       ),
-            //     ),
-            
-            //   ],
-            // ),
-          )
+              //       child: Column(
+              //         children: [
+              //           Row(
+              //             children: [
+              //               Container(
+              //                 padding: const EdgeInsets.all(6),
+              //                 margin: const EdgeInsets.fromLTRB(9, 5, 3, 5),
+              //                 decoration: BoxDecoration(
+              //                     color: Colors.blueAccent,
+              //                     borderRadius: BorderRadius.circular(30)),
+              //                 child: const Icon(
+              //                   Icons.person_add_alt_1_rounded,
+              //                   color: Colors.white,
+              //                 ),
+              //               ),
+              //               const Text('Subham',
+              //                   style: TextStyle(
+              //                       fontWeight: FontWeight.w500, fontSize: 16))
+              //             ],
+              //           ),
+              //           const Divider(),
+              //           Container(
+              //             padding: const EdgeInsets.all(10),
+              //             child: const Text(
+              //                 "In my previous article, I had discussed the differenc In my previous article, I had discussed the difference between Stateful and Stateless Widgets. You have to apply that concept to understand the working of this Counter App.e between Stateful and Stateless Widgets. You have to apply that concept to understand the working of this Counter App."),
+              //           )
+              //         ],
+              //       ),
+              //     ),
+
+              //   ],
+              // ),
+              )
 
           // Posts section ,
         ],
       )),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context)=>AddnewArticleScreen()));
+        },
         tooltip: "Add Note",
         child: const Icon(Icons.add_card),
       ),
