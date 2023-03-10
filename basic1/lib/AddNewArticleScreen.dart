@@ -49,46 +49,45 @@ class _AddNewArticleState extends State<AddnewArticleScreen> {
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
               ),
             ),
-            Container(
-                child: Column(
+            Column(
               children: [
-                Container(
-                  margin: EdgeInsets.all(20),
-                  decoration: BoxDecoration(),
-                  child: TextField(
-                    decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Enter the Subject',
-                        helperText: "max length is 20 characters"),
-                  ),
+            Container(
+              margin: EdgeInsets.all(20),
+              decoration: BoxDecoration(),
+              child: TextField(
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'Enter the Subject',
+                    helperText: "max length is 20 characters"),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              decoration: BoxDecoration(),
+              child: TextField(
+                keyboardType: TextInputType.multiline,
+                maxLines: 4,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  hintText: 'Write your Article',
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                  decoration: BoxDecoration(),
-                  child: TextField(
-                    keyboardType: TextInputType.multiline,
-                    maxLines: 4,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      hintText: 'Write your Article',
-                    ),
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.only(top:10),
-                  width: MediaQuery.of(context).size.width - 40,
-                  decoration: BoxDecoration(
-                      // color: Colors.green[50],
-                      borderRadius: BorderRadius.circular(7),
-                      border: Border.all(color: Colors.blue, width: 1.5)),
-                  child: TextButton(
-                    onPressed: () {},
-                    child: Text("Save",
-                        style: TextStyle(fontWeight: FontWeight.w600)),
-                  ),
-                )
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(top:10),
+              width: MediaQuery.of(context).size.width - 40,
+              decoration: BoxDecoration(
+                  // color: Colors.green[50],
+                  borderRadius: BorderRadius.circular(7),
+                  border: Border.all(color: Colors.blue, width: 1.5)),
+              child: TextButton(
+                onPressed: () {},
+                child: Text("Save",
+                    style: TextStyle(fontWeight: FontWeight.w600)),
+              ),
+            )
               ],
-            )),
+            ),
             Container()
           ],
         ));
