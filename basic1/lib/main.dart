@@ -1,9 +1,12 @@
 import 'package:basic1/AddNewArticleScreen.dart';
 import 'package:basic1/SplashScreen.dart';
 import 'package:basic1/UserScreen.dart';
+import 'package:basic1/dataBaseHelpers/mongodb.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await MongoDatabase.connect();
   runApp(const MyApp());
 }
 
