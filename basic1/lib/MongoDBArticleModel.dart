@@ -6,34 +6,61 @@ import 'dart:convert';
 
 import 'package:mongo_dart/mongo_dart.dart';
 
-MongodbArticleModel mongodbArticleModelFromJson(String str) => MongodbArticleModel.fromJson(json.decode(str));
+MongodbArticleModel mongodbArticleModelFromJson(String str) =>
+    MongodbArticleModel.fromJson(json.decode(str));
 
-String mongodbArticleModelToJson(MongodbArticleModel data) => json.encode(data.toJson());
+String mongodbArticleModelToJson(MongodbArticleModel data) =>
+    json.encode(data.toJson());
 
 class MongodbArticleModel {
-    MongodbArticleModel({
-        required this.id,
-        required this.subject,
-        required this.article,
-        required this.userId,
-    });
+  MongodbArticleModel({
+    required this.id,
+    required this.subject,
+    required this.article,
+    required this.uploaded,
+    required this.userdetails,
+  });
 
-    ObjectId id;
-    ObjectId userId;
-    String subject;
-    String article;
+  ObjectId id;
+  String subject;
+  String article;
+  String uploaded;
+  Userdetails userdetails;
 
-    factory MongodbArticleModel.fromJson(Map<String, dynamic> json) => MongodbArticleModel(
+  factory MongodbArticleModel.fromJson(Map<String, dynamic> json) =>
+      MongodbArticleModel(
         id: json["_id"],
-        userId : json["userId"],
         subject: json["subject"],
         article: json["article"],
-    );
+        uploaded: json["uploaded"],
+        userdetails: Userdetails.fromJson(json["userdetails"]),
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "_id": id,
-        "userId":userId,
         "subject": subject,
         "article": article,
-    };
+        "uploaded": uploaded,
+        "userdetails": userdetails.toJson(),
+      };
+}
+
+class Userdetails {
+  Userdetails({
+    required this.name,
+    required this.userid,
+  });
+
+  String name;
+  ObjectId userid;
+
+  factory Userdetails.fromJson(Map<String, dynamic> json) => Userdetails(
+        name: json["name"],
+        userid: json["userid"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "name": name,
+        "userid": userid,
+      };
 }

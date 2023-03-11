@@ -1,10 +1,15 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:basic1/AddNewArticleScreen.dart';
+import 'package:basic1/LoginScreen.dart';
+import 'package:basic1/MongoDBArticleModel.dart';
+import 'package:basic1/SignUpScreen.dart';
 import 'package:basic1/SplashScreen.dart';
 import 'package:basic1/UserScreen.dart';
 import 'package:basic1/dataBaseHelpers/mongodb.dart';
 import 'package:flutter/material.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await MongoDatabase.connect();
   runApp(const MyApp());
@@ -32,7 +37,8 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-        home: SplashScreen());
+        // home: SplashScreen());
+        home:SignUpScreen());
   }
 }
 
@@ -120,18 +126,16 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontSize: 22,
                     fontWeight: FontWeight.w500),
               ),
-              
-                TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UserScreen(
-                                    userdata: data[0],
-                                  )));
-                    },
-                    child: const Icon(Icons.menu_rounded)),
-              
+              TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => UserScreen(
+                                  userdata: data[0],
+                                )));
+                  },
+                  child: const Icon(Icons.menu_rounded)),
             ],
           )),
       body: (Column(
@@ -178,100 +182,92 @@ class _MyHomePageState extends State<MyHomePage> {
               decoration: BoxDecoration(
                   color: Colors.green[100],
                   borderRadius: BorderRadius.circular(12)),
-              child: ListView.builder(
-                itemBuilder: (context, index) {
-                  return (Container(
-                    // height: 100,
-                    margin:
-                        const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
-
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(6),
-                              margin: const EdgeInsets.fromLTRB(9, 5, 3, 5),
-                              decoration: BoxDecoration(
-                                  color: Colors.blueAccent,
-                                  borderRadius: BorderRadius.circular(30)),
-                              child: const Icon(
-                                Icons.person_add_alt_1_rounded,
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(data[index]['name'],
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w500, fontSize: 16))
-                          ],
-                        ),
-                        const Divider(),
-                        Container(
-                          padding: const EdgeInsets.all(10),
-                          child: Text(data[index]['article']),
-                        )
-                      ],
-                    ),
-                  ));
-                },
-                itemCount: data.length,
-              )
-              // child: ListView(
-              //   children: [
-              //     Container(
-              //       // height: 100,
-              //       margin:
-              //           const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-              //       decoration: BoxDecoration(
-              //           color: Colors.white,
-              //           borderRadius: BorderRadius.circular(10)),
-
-              //       child: Column(
-              //         children: [
-              //           Row(
-              //             children: [
-              //               Container(
-              //                 padding: const EdgeInsets.all(6),
-              //                 margin: const EdgeInsets.fromLTRB(9, 5, 3, 5),
-              //                 decoration: BoxDecoration(
-              //                     color: Colors.blueAccent,
-              //                     borderRadius: BorderRadius.circular(30)),
-              //                 child: const Icon(
-              //                   Icons.person_add_alt_1_rounded,
-              //                   color: Colors.white,
-              //                 ),
-              //               ),
-              //               const Text('Subham',
-              //                   style: TextStyle(
-              //                       fontWeight: FontWeight.w500, fontSize: 16))
-              //             ],
-              //           ),
-              //           const Divider(),
-              //           Container(
-              //             padding: const EdgeInsets.all(10),
-              //             child: const Text(
-              //                 "In my previous article, I had discussed the differenc In my previous article, I had discussed the difference between Stateful and Stateless Widgets. You have to apply that concept to understand the working of this Counter App.e between Stateful and Stateless Widgets. You have to apply that concept to understand the working of this Counter App."),
-              //           )
-              //         ],
-              //       ),
-              //     ),
-
-              //   ],
-              // ),
-              )
-
-          // Posts section ,
+              child: SafeArea(
+                child: FutureBuilder(
+                    future: MongoDatabase.getdata(),
+                    builder: (context, AsyncSnapshot snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (context, index) {
+                                return articleCard(MongodbArticleModel.fromJson(
+                                    snapshot.data[index]));
+                              });
+                        } else {
+                          return Center(
+                            child: Text("No Data FOund" , style: TextStyle(color: Colors.black87 , fontWeight: FontWeight.w800),),
+                          );
+                        }
+                      }
+                    }),
+              ))
         ],
       )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context)=>AddnewArticleScreen()));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AddnewArticleScreen()));
         },
         tooltip: "Add Note",
         child: const Icon(Icons.add_card),
+      ),
+    );
+  }
+
+// Custom Widget to display the articles
+  Widget articleCard(MongodbArticleModel data) {
+    return Container(
+      // height: 100,
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+      decoration: BoxDecoration(
+          color: Colors.white, borderRadius: BorderRadius.circular(10)),
+
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                margin: const EdgeInsets.fromLTRB(9, 5, 3, 5),
+                decoration: BoxDecoration(
+                    color: Colors.blueAccent,
+                    borderRadius: BorderRadius.circular(30)),
+                child: const Icon(
+                  Icons.person_add_alt_1_rounded,
+                  color: Colors.white,
+                ),
+              ),
+              Column(
+              crossAxisAlignment: CrossAxisAlignment.start,  
+              children: [
+              Text(data.userdetails.name,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w400, fontSize: 15)),
+
+              Text(data.uploaded,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w400, fontSize: 12 , color: Colors.black26)),
+
+              ],)
+            ],
+          ),
+          const Divider(),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical:2 , horizontal:10 ),
+            child:Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+              Text(data.subject ,style: TextStyle(fontWeight: FontWeight.bold , fontSize: 16),),
+              Padding(padding:EdgeInsets.symmetric(vertical:5 ,horizontal:0 ) , child:Text(data.article) ,)
+              
+            ],),
+          )
+        ],
       ),
     );
   }

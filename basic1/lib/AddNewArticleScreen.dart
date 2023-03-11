@@ -91,7 +91,7 @@ class _AddNewArticleState extends State<AddnewArticleScreen> {
                   child: TextButton(
                     onPressed: () {
                       _insertData(subjectController.text,
-                          articleController.text, "636d2e6c24976ac6f1128cee");
+                          articleController.text);
                     },
                     child: Text("Save",
                         style: TextStyle(fontWeight: FontWeight.w600)),
@@ -105,12 +105,20 @@ class _AddNewArticleState extends State<AddnewArticleScreen> {
   }
 
   Future<void> _insertData(
-      String subject, String article, String userId) async {
+      String subject, String article) async {
     var id = mongo.ObjectId();
+    var userId = "636d2e6c24976ac6f1128cee";
     var userIdObj = mongo.ObjectId.fromHexString(userId);
+    var name = "SubhamC";
+    // Map<String , dynamic> userdetails = {
+    //   "name":"SubhamC",
+    //   "userid":userIdObj
+    // };
+    var userdetails = Userdetails(name: name, userid: userIdObj);
 
+    
     final data = MongodbArticleModel(
-        id: id, subject: subject, article: article, userId: userIdObj);
+        id: id, subject: subject, article: article,uploaded: DateTime.now().toString(),userdetails: userdetails);
     var res = await MongoDatabase.insert(data);
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text("Article Inserted :)")));
