@@ -3,6 +3,7 @@
 import 'package:basic1/AddNewArticleScreen.dart';
 import 'package:basic1/LoginScreen.dart';
 import 'package:basic1/MongoDBArticleModel.dart';
+import 'package:basic1/ProfileDetailsSubmit.dart';
 import 'package:basic1/SignUpScreen.dart';
 import 'package:basic1/SplashScreen.dart';
 import 'package:basic1/UserScreen.dart';
@@ -39,6 +40,7 @@ class MyApp extends StatelessWidget {
         // home: const MyHomePage(title: 'Flutter Demo Home Page'),
         // home: SplashScreen());
         home:SignUpScreen());
+        // home:ProfileDetailsSubmit());
   }
 }
 

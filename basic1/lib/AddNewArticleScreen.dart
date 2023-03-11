@@ -1,6 +1,6 @@
 // import 'package:flutter/cupertino.dart';
 
-// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously, unnecessary_new, use_key_in_widget_constructors
 
 // import 'dart:html';
 
@@ -62,6 +62,7 @@ class _AddNewArticleState extends State<AddnewArticleScreen> {
                   decoration: BoxDecoration(),
                   child: TextField(
                     controller: subjectController,
+                    
                     decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         hintText: 'Enter the Subject',
