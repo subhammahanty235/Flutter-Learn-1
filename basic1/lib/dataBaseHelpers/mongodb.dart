@@ -22,6 +22,23 @@ class MongoDatabase {
     return data;
   }
 
+  static Future<Map<String, dynamic>> getUserData(var userId) async {
+    // print("--------------------------------mongo funv---------------------");
+    // print(userId);
+
+    final data =
+        await usersCollection.findOne({"_id": ObjectId.fromHexString(userId)});
+    if (data == null) {
+      // print("-----------------------------------Nulllll-----------------------------");
+      return {"message": "user not exists"};
+    } else {
+      // print("_____________________mongoData__________________________________");
+      // print(data);
+
+      return data;
+    }
+  }
+
   static Future<String> insert(MongodbArticleModel data) async {
     try {
       var res = await articlesCollection.insertOne(data.toJson());
@@ -56,11 +73,33 @@ class MongoDatabase {
     }
   }
 
-  static Future<bool> saveprofile(Profiledetails userdata , var userid)async{
+  static Future<Map<String, dynamic>> loginuser(
+      String email, String password) async {
     try {
-      await usersCollection.updateOne(where.eq('_id', userid ), modify.set('profiledetails', userdata));
+      var user = await usersCollection.findOne({"email": email});
+      // print("-------------------vvvvv----------------------vvvvvvvvvvvv----------------");
+      // print(user);
+      if (user != null) {
+        if (user["password"] == password) {
+          return user;
+        } else {
+          return {"message": "Wrong Credentials"};
+        }
+      } else {
+        return {"message": "Wrong Credentials"};
+      }
+    } catch (e) {
+      return {"message": e.toString()};
+    }
+  }
+
+  static Future<bool> saveprofile(Profiledetails userdata, var userid) async {
+    try {
+      await usersCollection.updateOne(where.eq('_id', userid),
+          modify.set('profiledetails', userdata.toJson()));
       return true;
     } catch (e) {
+      // print(e.toString());
       return false;
     }
   }

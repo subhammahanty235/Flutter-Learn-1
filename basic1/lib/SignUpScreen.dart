@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_new, use_build_context_synchronously
 
+import 'package:basic1/LoginScreen.dart';
 import 'package:basic1/MongoDBUserModel.dart';
 import 'package:basic1/ProfileDetailsSubmit.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +15,6 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  
   var emailController = new TextEditingController();
   var passwordController = new TextEditingController();
   var conformPasswordController = new TextEditingController();
@@ -22,6 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
         appBar: AppBar(
           title: const Text(
             'Artico',
@@ -106,7 +107,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     Border.all(color: Colors.blue, width: 1.5)),
                             child: TextButton(
                               onPressed: () {
-                               _createaccount(emailController.text, passwordController.text, conformPasswordController.text);
+                                _createaccount(
+                                    emailController.text,
+                                    passwordController.text,
+                                    conformPasswordController.text);
                               },
                               child: Text("Create your account",
                                   style:
@@ -114,45 +118,61 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             ),
                           )
                         ]),
-                    Text("Log In",
+                        TextButton(onPressed: (){
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+                        } , child: Text("Log In",
                         style: TextStyle(
                             color: Colors.blue,
                             fontSize: 20,
-                            fontWeight: FontWeight.bold))
+                            fontWeight: FontWeight.bold)))
+                    
                   ],
                 ))));
   }
 
   Future<void> _createaccount(
       String email, String password, String confirmPassword) async {
-    
     var id = mongo.ObjectId();
-    
-    if(email.length <= 4 && password.length <= 5){
+
+    if (email.length >= 4 && password.length >= 5) {
       if (password == confirmPassword) {
-      final data = MongodbUserModel(id:id , email: email, password: password);
-      var res = await MongoDatabase.createuser(data);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(res), backgroundColor: Colors.green[200],));
-      if(res == "Account Created"){
-        // print(id);
-        // storing the id  to use in other screens and a boolean value to check if user has loggedin or not
+        final data = MongodbUserModel(id: id, email: email, password: password);
+        var res = await MongoDatabase.createuser(data);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(res),
+          backgroundColor: Colors.green[200],
+        ));
+        if (res == "Account Created") {
+          // print(id);
+          // storing the id  to use in other screens and a boolean value to check if user has loggedin or not
+          // print("-----------------------------------------------------------------");
+          // print(id.toHexString());
 
-        final prefs = await SharedPreferences.getInstance();
-        prefs.setString("id", id.toString());
-        prefs.setBool("loggedin", true);
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString("ID_USER", id.toHexString());
+          prefs.setBool("USER_LOGGEDIN", true);
 
-        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context)=> ProfileDetailsSubmit(userId:id)));
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProfileDetailsSubmit(userId: id)));
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Password and Confirm Password not matching"),
+          backgroundColor: Colors.red[200],
+        ));
       }
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Password and Confirm Password not matching"), backgroundColor: Colors.red[200],));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Email and Password shoud be greater than 5 characters"),
+        backgroundColor: Colors.red[200],
+      ));
     }
-    }else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Email and Password shoud be greater than 5 characters") , backgroundColor: Colors.red[200],));
-    }
-    
+
     _clearAll();
-    
   }
+
   void _clearAll() {
     emailController.text = "";
     passwordController.text = "";

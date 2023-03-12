@@ -4,6 +4,7 @@ import 'package:basic1/MongoDBUserModel.dart';
 import 'package:basic1/dataBaseHelpers/mongodb.dart';
 import 'package:basic1/main.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileDetailsSubmit extends StatefulWidget {
   var userId;
@@ -138,7 +139,8 @@ class _ProfileDetailsSubmitState extends State<ProfileDetailsSubmit> {
 
   Future<void> _submitData(String name, String gender, var age, String hobbies,
       String country) async {
-    var userDetails = Profiledetails(
+    if(name.length >= 5 && age >= 0 && age<= 100 && country.length>= 3 && hobbies.length >= 3){
+      var userDetails = Profiledetails(
         name: name,
         gender: gender,
         age: int.parse(age),
@@ -147,6 +149,10 @@ class _ProfileDetailsSubmitState extends State<ProfileDetailsSubmit> {
 
     var res = await MongoDatabase.saveprofile(userDetails, widget.userId);
     if (res == true) {
+      // storing the name to use while posting a article , it will help to improve the performance and also keep the code easy to understand as this project is not a production application
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setString("NAME_USER", name);
+      
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Profile Created :)") , backgroundColor: Colors.green[100],));
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>MyHomePage(title: "HomePage")));
@@ -154,5 +160,11 @@ class _ProfileDetailsSubmitState extends State<ProfileDetailsSubmit> {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text("Try again later:)"), backgroundColor: Colors.red[200],));
     }
+    }
+    else{
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Please Fill data") , backgroundColor: Colors.red[200],));
+    }
+    
   }
 }

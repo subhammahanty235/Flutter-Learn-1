@@ -9,6 +9,7 @@ import 'package:basic1/dataBaseHelpers/mongodb.dart';
 import 'package:basic1/main.dart';
 import 'package:flutter/material.dart';
 import 'package:mongo_dart/mongo_dart.dart' as mongo;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddnewArticleScreen extends StatefulWidget {
   @override
@@ -107,15 +108,14 @@ class _AddNewArticleState extends State<AddnewArticleScreen> {
 
   Future<void> _insertData(
       String subject, String article) async {
+      final prefs = await SharedPreferences.getInstance();
     var id = mongo.ObjectId();
-    var userId = "636d2e6c24976ac6f1128cee";
-    var userIdObj = mongo.ObjectId.fromHexString(userId);
-    var name = "SubhamC";
-    // Map<String , dynamic> userdetails = {
-    //   "name":"SubhamC",
-    //   "userid":userIdObj
-    // };
-    var userdetails = Userdetails(name: name, userid: userIdObj);
+    var userId = prefs.getString("ID_USER");
+    var name = prefs.getString("NAME_USER");
+    
+   
+    
+    var userdetails = Userdetails(name: name.toString(), userid: userId.toString());
 
     
     final data = MongodbArticleModel(

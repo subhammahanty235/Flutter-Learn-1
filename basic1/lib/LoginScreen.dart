@@ -1,7 +1,12 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
+import 'package:basic1/ProfileDetailsSubmit.dart';
+import 'package:basic1/SignUpScreen.dart';
+import 'package:basic1/dataBaseHelpers/mongodb.dart';
+import 'package:basic1/main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,17 +14,19 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  var emailController = new TextEditingController();
+  var passwordController = new TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title:const Text(
-                  'Artico',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.w500),
-                ),
+          title: const Text(
+            'Artico',
+            style: TextStyle(
+                color: Colors.white, fontSize: 22, fontWeight: FontWeight.w500),
+          ),
         ),
         body: Container(
             // height:,
@@ -35,22 +42,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    // CircleAvatar(
-                    //   backgroundColor: Colors.blue,
-                    //   maxRadius: 50,
-
-                    //   child: Text("Login",
-                    //       textAlign: TextAlign.center,
-                    //       style: TextStyle(
-                    //           color: Colors.black,
-                    //           fontSize: 25,
-                    //           fontWeight: FontWeight.bold)),
-                    // ),
-
                     Column(
                         // mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          
                           CircleAvatar(
                             backgroundColor: Colors.blue,
                             maxRadius: 50,
@@ -67,7 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             //     vertical: 10, horizontal: 20),
                             decoration: BoxDecoration(),
                             child: TextField(
-                              // controller: subjectController,
+                              controller: emailController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 hintText: 'Email id',
@@ -80,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 vertical: 10, horizontal: 20),
                             decoration: BoxDecoration(),
                             child: TextField(
-                              // controller: subjectController,
+                              controller: passwordController,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
                                 hintText: 'Password',
@@ -98,8 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Border.all(color: Colors.blue, width: 1.5)),
                             child: TextButton(
                               onPressed: () {
-                                // _insertData(subjectController.text,
-                                //     articleController.text);
+                                _logintoaccount(emailController.text,
+                                    passwordController.text);
                               },
                               child: Text("Log in to your Account",
                                   style:
@@ -107,12 +101,63 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           )
                         ]),
-                    Text("Sign Up",
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold))
+                    TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignUpScreen()));
+                        },
+                        child: Text("Create New Account",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold)))
                   ],
                 ))));
+  }
+
+  Future<void> _logintoaccount(String email, String password) async {
+    if (email.length >= 4 && password.length >= 5) {
+      var res = await MongoDatabase.loginuser(email, password);
+      // this code needs improvments  , I am taking care of it :)
+      if (res["message"] == null) {
+        if (res["email"] != null && res["_id"] != null) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+              "Logged In",
+              textAlign: TextAlign.center,
+            ),
+            backgroundColor: Color.fromARGB(255, 74, 209, 79),
+          ));
+
+          final prefs = await SharedPreferences.getInstance();
+          prefs.setString("ID_USER",  res["_id"].toHexString());
+          prefs.setBool("USER_LOGGEDIN", true);
+
+          // checking if user has created their profile or not , if not then they will be redirected to the CreateProfileScreen , :>
+          if(res["profiledetails"] == null){
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ProfileDetailsSubmit(userId: res["_id"])));
+          }
+          else{
+            prefs.setString("NAME_USER", res["profiledetails"]["name"]);
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MyHomePage(title: "Artico")));
+          }
+
+          
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(res["message"]),
+          backgroundColor: Colors.red[200],
+        ));
+      }
+    }
   }
 }

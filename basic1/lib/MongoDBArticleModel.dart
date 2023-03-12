@@ -52,7 +52,7 @@ class Userdetails {
   });
 
   String name;
-  ObjectId userid;
+  String userid;
 
   factory Userdetails.fromJson(Map<String, dynamic> json) => Userdetails(
         name: json["name"],

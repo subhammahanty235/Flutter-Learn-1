@@ -1,14 +1,12 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, use_build_context_synchronously
 
 import 'package:basic1/AddNewArticleScreen.dart';
-import 'package:basic1/LoginScreen.dart';
 import 'package:basic1/MongoDBArticleModel.dart';
-import 'package:basic1/ProfileDetailsSubmit.dart';
-import 'package:basic1/SignUpScreen.dart';
 import 'package:basic1/SplashScreen.dart';
 import 'package:basic1/UserScreen.dart';
 import 'package:basic1/dataBaseHelpers/mongodb.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,35 +24,17 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
           primarySwatch: Colors.blue,
         ),
         // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-        // home: SplashScreen());
-        home:SignUpScreen());
-        // home:ProfileDetailsSubmit());
+        home: SplashScreen());
+    // home:SignUpScreen());
+    // home:ProfileDetailsSubmit());
   }
 }
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -63,19 +43,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
+  @override
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> data = [];
@@ -129,12 +97,19 @@ class _MyHomePageState extends State<MyHomePage> {
                     fontWeight: FontWeight.w500),
               ),
               TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    var userId = prefs.getString("ID_USER");
+                    // final id = ObjectId.parse(userId);
+
+                    // print("--------------------------------------------------------");
+                    // print(userId);
+                    // print("---------------------------------------------------------");
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) => UserScreen(
-                                  userdata: data[0],
+                                  userId: userId,
                                 )));
                   },
                   child: const Icon(Icons.menu_rounded)),
@@ -149,34 +124,52 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: <Widget>[
                     Container(
                       width: 150,
-                      margin: const EdgeInsets.only(top: 6),
+                      // margin: const EdgeInsets.only(top: 6),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 8.0),
+                          horizontal: 0, vertical: 0),
                       decoration: BoxDecoration(
                           color: Colors.blue[100],
                           borderRadius: BorderRadius.circular(10)),
-                      child: const Text(
-                        'My Posts',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12.0, color: Colors.black),
+                      child: TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          'Global',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 12.0, color: Colors.black),
+                        ),
                       ),
                     ),
                     Container(
                       width: 150,
-                      margin: const EdgeInsets.only(top: 6),
+                      // margin: const EdgeInsets.only(top: 6),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 8.0),
+                          horizontal: 0, vertical: 0),
                       decoration: BoxDecoration(
-                          color: Colors.blue[100],
+                          // color: Colors.blue[100],
+                          border: Border.all(color: Colors.blue),
                           borderRadius: BorderRadius.circular(10)),
-                      child: const Text(
-                        'Global',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12.0, color: Colors.black),
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                        ),
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                            content: Text(
+                              "Please Hold my coffee , I am still coding this feature :)",
+                              textAlign: TextAlign.center,
+                            ),
+                            
+                            backgroundColor: Colors.lightBlueAccent,
+                          ));
+                        },
+                        child: Text(
+                          'My Posts',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 12.0, color: Colors.black),
+                        ),
                       ),
-                    )
+                    ),
                   ])),
-
           Container(
               padding: const EdgeInsets.all(10),
               margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 20),
@@ -202,7 +195,12 @@ class _MyHomePageState extends State<MyHomePage> {
                               });
                         } else {
                           return Center(
-                            child: Text("No Data FOund" , style: TextStyle(color: Colors.black87 , fontWeight: FontWeight.w800),),
+                            child: Text(
+                              "No Data FOund",
+                              style: TextStyle(
+                                  color: Colors.black87,
+                                  fontWeight: FontWeight.w800),
+                            ),
                           );
                         }
                       }
@@ -245,29 +243,36 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Column(
-              crossAxisAlignment: CrossAxisAlignment.start,  
-              children: [
-              Text(data.userdetails.name,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w400, fontSize: 15)),
-
-              Text(data.uploaded,
-                  style: const TextStyle(
-                      fontWeight: FontWeight.w400, fontSize: 12 , color: Colors.black26)),
-
-              ],)
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(data.userdetails.name,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w400, fontSize: 15)),
+                  Text(data.uploaded,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.w400,
+                          fontSize: 12,
+                          color: Colors.black26)),
+                ],
+              )
             ],
           ),
           const Divider(),
           Container(
-            padding: const EdgeInsets.symmetric(vertical:2 , horizontal:10 ),
-            child:Column(
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-              Text(data.subject ,style: TextStyle(fontWeight: FontWeight.bold , fontSize: 16),),
-              Padding(padding:EdgeInsets.symmetric(vertical:5 ,horizontal:0 ) , child:Text(data.article) ,)
-              
-            ],),
+                Text(
+                  data.subject,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                  child: Text(data.article),
+                )
+              ],
+            ),
           )
         ],
       ),
